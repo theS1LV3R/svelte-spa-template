@@ -1,0 +1,8 @@
+{
+  "[typescript]": {
+    "editor.rulers": [100]
+  },
+  "[svelte]": {
+    "editor.rulers": [100]
+  }
+}
