@@ -1,14 +1,13 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { AppShell, Tab, TabGroup } from '@skeletonlabs/skeleton';
-  import { Home, Users, type Icon, type IconEvents, type IconProps } from 'lucide-svelte';
-  import type { SvelteComponentTyped } from 'svelte';
-  import { writable } from 'svelte/store';
+  import { pageName } from '$lib/stores';
+  import { AppShell } from '@skeletonlabs/skeleton';
+  import { Users } from 'lucide-svelte';
+  import type { ComponentType } from 'svelte';
 
-  const tabSet = writable(0);
+  $pageName = 'Admin';
 
-  const pages: { label: string; href: string; icon: any }[] = [
-    { label: 'Home', icon: Home, href: '/admin' },
+  const pages: { label: string; icon?: ComponentType; href: string }[] = [
     { label: 'Users', icon: Users, href: '/admin/users' },
   ];
 
@@ -33,5 +32,7 @@
       </ul>
     </nav>
   </svelte:fragment>
-  <slot />
+  <div class="mx-3">
+    <slot />
+  </div>
 </AppShell>

@@ -1,6 +1,8 @@
 import { randomBytes } from 'crypto';
 import type { User } from '@prisma/client';
 import prisma from '$lib/server/prisma';
+import { resolve } from 'path';
+import { fileURLToPath } from 'url';
 
 export const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -9,12 +11,11 @@ export async function genSession(userId: User['id']) {
   const now = new Date();
   await prisma.session.deleteMany({ where: { expiresAt: { lt: now } } });
 
-  let key = randomBytes(64).toString('hex');
+  let key = '';
+  while ((key = randomBytes(64).toString('hex'))) {
+    if ((await prisma.session.findUnique({ where: { key } })) === null) break;
 
-  while ((await prisma.session.findUnique({ where: { key } })) !== null) {
     console.log('Generated key already taken, regenerating');
-
-    key = randomBytes(64).toString('hex');
   }
 
   const expiresAt = new Date();
@@ -31,10 +32,4 @@ export async function genSession(userId: User['id']) {
   return key;
 }
 
-// Exclude keys from user
-export function exclude<T, Key extends keyof T>(object: T, keys: Key[]): Omit<T, Key> {
-  for (const key of keys) {
-    delete object[key];
-  }
-  return object;
-}
+export const fileUploadPath = resolve(fileURLToPath(import.meta.url), '../../../../uploads');

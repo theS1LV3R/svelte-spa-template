@@ -1,14 +1,16 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('NONE', 'ADMIN');
+CREATE TYPE "Role" AS ENUM ('ADMIN');
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
     "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "lastUpdated" TIMESTAMP(3) NOT NULL,
     "passwordHash" TEXT NOT NULL,
-    "role" "Role" NOT NULL,
+    "roles" "Role"[] DEFAULT ARRAY[]::"Role"[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -19,6 +21,7 @@ CREATE TABLE "Session" (
     "userId" INTEGER NOT NULL,
     "key" TEXT NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
 );

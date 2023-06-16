@@ -1,7 +1,7 @@
 <script lang="ts">
   import { toastStore } from '@skeletonlabs/skeleton';
   import { page } from '$app/stores';
-  import { trpcClient } from '$lib/trpc-client/client';
+  import { safeTrpc } from '$lib/trpc-client/client';
   import { pageName } from '$lib/stores/pageName';
 
   let username = '';
@@ -11,11 +11,13 @@
   $pageName = 'Register';
 
   async function submit() {
-    const res = await trpcClient($page).register.query({
-      username,
-      password,
-      repeatPassword,
-    });
+    const res = await safeTrpc($page, (t) =>
+      t.auth.register.query({
+        username,
+        password,
+        repeatPassword,
+      }),
+    );
 
     if (typeof res !== 'undefined') {
       toastStore.trigger({

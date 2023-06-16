@@ -4,5 +4,8 @@
   },
   "[svelte]": {
     "editor.rulers": [100]
+  },
+  "search.exclude": {
+    "**/.svelte-kit": true
   }
 }

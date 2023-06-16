@@ -3,7 +3,7 @@
   import type { PageData } from './$types';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { trpcClient } from '$lib/trpc-client/client';
+  import { safeTrpc } from '$lib/trpc-client/client';
   import { pageName } from '$lib/stores/pageName';
 
   let username = '';
@@ -14,10 +14,12 @@
   $pageName = 'Login';
 
   async function submit() {
-    const res = await trpcClient($page).login.query({
-      username,
-      password,
-    });
+    const res = await safeTrpc($page, (t) =>
+      t.auth.login.query({
+        username,
+        password,
+      }),
+    );
 
     if (typeof res === 'string') {
       await goto(
